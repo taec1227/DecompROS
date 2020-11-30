@@ -3,21 +3,25 @@ project(decomp_test_node)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated-declarations")
 
-find_package(catkin_simple REQUIRED)
 find_package(cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(decomp_util REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIRS} ${DECOMP_UTIL_INCLUDE_DIRS})
+find_package(catkin REQUIRED COMPONENTS roscpp decomp_ros_utils rosbag)
 
-catkin_simple()
+catkin_package(
+    CATKIN_DEPENDS decomp_ros_utils rosbag
+)
 
-cs_add_executable(test_path_decomp_2d src/test_path_decomp_2d.cpp)
+include_directories(include ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIRS}
+    ${DECOMP_UTIL_INCLUDE_DIRS}
+)
 
-cs_add_executable(test_path_decomp_3d src/test_path_decomp_3d.cpp)
+add_executable(test_path_decomp_2d src/test_path_decomp_2d.cpp)
+target_link_libraries(test_path_decomp_2d ${catkin_LIBRARIES})
 
-cs_add_executable(test_seed_decomp src/test_seed_decomp.cpp)
+add_executable(test_path_decomp_3d src/test_path_decomp_3d.cpp)
+target_link_libraries(test_path_decomp_3d ${catkin_LIBRARIES})
 
-cs_install()
-
-cs_export()
-
+add_executable(test_seed_decomp src/test_seed_decomp.cpp)
+target_link_libraries(test_seed_decomp ${catkin_LIBRARIES})

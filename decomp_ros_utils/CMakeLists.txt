@@ -3,11 +3,13 @@ project(decomp_ros_utils)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-deprecated-declarations")
 find_package(catkin REQUIRED COMPONENTS rviz roscpp)
-find_package(catkin_simple REQUIRED)
 find_package(cmake_modules)
 find_package(Eigen3 REQUIRED)
 find_package(decomp_util REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIRS} ${DECOMP_UTIL_INCLUDE_DIRS})
+
+catkin_package(INCLUDE_DIRS include)
+
+include_directories(include ${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS} ${DECOMP_UTIL_INCLUDE_DIRS})
 
 add_definitions(-DQT_NO_KEYWORDS)
 
@@ -26,8 +28,6 @@ else()
   set(QT_LIBRARIES Qt5::Widgets)
 endif()
 
-catkin_simple()
-
 set(SOURCE_FILES
   src/bound_visual.cpp
   src/mesh_visual.cpp
@@ -37,10 +37,5 @@ set(SOURCE_FILES
   src/polyhedron_array_display.cpp
   ${MOC_FILES})
 
-cs_add_library(decomp_rviz_plugins ${SOURCE_FILES})
+add_library(decomp_rviz_plugins ${SOURCE_FILES})
 target_link_libraries(decomp_rviz_plugins ${QT_LIBRARIES} ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES})
-
-cs_install()
-
-#cs_export()
-cs_export(DEPENDS decomp_util)
